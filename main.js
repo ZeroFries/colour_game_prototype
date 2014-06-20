@@ -7,11 +7,10 @@ function Block() {
     this.color_left = 'red';
     this.color_right = 'blue';
     this.size = new Size(500, 20);
-    this.velocity = new Point(0, 0);
+    this.velocity = new Point(0, 1); // y increases downward
 
     // Paperjs Path
     this.path = new Path.Rectangle(new Point(0, 0), this.size);
-    this.path.strokeColor = 'black';
     this.path.fillColor = {
         gradient: {
             stops: [this.color_left, this.color_right]
@@ -21,23 +20,23 @@ function Block() {
     }
 }
 
-Block.prototype.move = function(moveVector) {
-    this.path.position.x += moveVector.x;
-    this.path.position.y += moveVector.y;
+Block.prototype.move = function() {
+    this.path.position.x += this.velocity.x;
+    this.path.position.y += this.velocity.y;
 }
 
 function Game() {
     this.blocks = [];
     this.mainColour = [128, 128, 128];
     this.started = false;
+    this.background = null;
 }
 
 Game.prototype.startGame = function() {
     window.paper.setup('gameCanvas');
 
-    var background = new Path.Rectangle([0, 0], [500, 500]);
-    background.fillColor = 'lightgrey';
-
+    this.background = new Path.Rectangle([0, 0], [500, 500]);
+    this.background.fillColor = 'lightgrey';
     this.blocks.push(new Block());
 
     this.bindColorControlEvents();
@@ -46,12 +45,14 @@ Game.prototype.startGame = function() {
 
 Game.prototype.drawFrame = function() {
     _.each(this.blocks, function(block) {
-        block.move(new Point(0, 1));
+        block.move();
 
         if (block.path.position.y > 510) {
             block.path.position.y = 0;
         }
     });
+
+    this.background.fillColor = new Color(this.mainColour[0] / 255, this.mainColour[1] / 255, this.mainColour[2] / 255);
 }
 
 Game.prototype.bindColorControlEvents = function() {
@@ -73,11 +74,11 @@ Game.prototype.bindColorControlEvents = function() {
         incrementMainColour = setInterval(function() {
             if (e.which == 1 && game.mainColour[colourPosition] < 256) {
                 game.mainColour[colourPosition] += gameConstants.colourIncrement;
-                console.log(game.mainColour);
+                // console.log(game.mainColour);
                 $colourControl.css('background-color', colourControlRGB(colourPosition, game.mainColour));
             } else if (e.which == 3 && game.mainColour[colourPosition] > 0) {
                 game.mainColour[colourPosition] -= gameConstants.colourIncrement;
-                console.log(game.mainColour);
+                // console.log(game.mainColour);
                 $colourControl.css('background-color', colourControlRGB(colourPosition, game.mainColour));
             }
         }, gameConstants.colourIncrementSpeed);
