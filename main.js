@@ -1,6 +1,6 @@
 window.gameConstants = {
-	colourIncrement: 2,
-	colourIncrementSpeed: 10 // in ms
+    colourIncrement: 2,
+    colourIncrementSpeed: 10 // in ms
 };
 
 function Block() {
@@ -55,51 +55,50 @@ Game.prototype.drawFrame = function() {
 }
 
 Game.prototype.bindColorControlEvents = function() {
-	var controlColourPosition = {
-		"red-control": 0,
-		"green-control": 1,
-		"blue-control": 2
-	};
-	var incrementMainColour;
-	var game = this;
+    var controlColourPosition = {
+        "red-control": 0,
+        "green-control": 1,
+        "blue-control": 2
+    };
+    var incrementMainColour;
+    var game = this;
     var $colourControls = $('#red-control').add('#green-control').add('#blue-control');
-    
-    $colourControls.on("mousedown", function(e) {
-    	var $colourControl = $(this);
-    	e.preventDefault();
-    	clearInterval(incrementMainColour);
 
-    	var colourPosition = controlColourPosition[$(this).attr('id')];
-    	incrementMainColour = setInterval(function() {
-    		if (e.which == 1 && game.mainColour[colourPosition] < 256) {
-    			game.mainColour[colourPosition] += gameConstants.colourIncrement;
-    			console.log(game.mainColour);
-    			$colourControl.css('background-color', colourControlRGB(colourPosition, game.mainColour));
-    		} 
-    		else if (e.which == 3 && game.mainColour[colourPosition] > 0) {
-    			game.mainColour[colourPosition] -= gameConstants.colourIncrement;
-    			console.log(game.mainColour);
-    			$colourControl.css('background-color', colourControlRGB(colourPosition, game.mainColour));
-    		}
-    	}, gameConstants.colourIncrementSpeed);
+    $colourControls.on("mousedown", function(e) {
+        var $colourControl = $(this);
+        e.preventDefault();
+        clearInterval(incrementMainColour);
+
+        var colourPosition = controlColourPosition[$(this).attr('id')];
+        incrementMainColour = setInterval(function() {
+            if (e.which == 1 && game.mainColour[colourPosition] < 256) {
+                game.mainColour[colourPosition] += gameConstants.colourIncrement;
+                console.log(game.mainColour);
+                $colourControl.css('background-color', colourControlRGB(colourPosition, game.mainColour));
+            } else if (e.which == 3 && game.mainColour[colourPosition] > 0) {
+                game.mainColour[colourPosition] -= gameConstants.colourIncrement;
+                console.log(game.mainColour);
+                $colourControl.css('background-color', colourControlRGB(colourPosition, game.mainColour));
+            }
+        }, gameConstants.colourIncrementSpeed);
     });
 
     $colourControls.on("mouseup", function(e) {
-    	clearInterval(incrementMainColour);
+        clearInterval(incrementMainColour);
     });
 }
 
 function colourControlRGB(colourPosition, colourArray) {
-	var rgb = [0, 0, 0]
-	rgb[colourPosition] = colourArray[colourPosition];
-	return "rgb(" + rgb.join() + ")";
+    var rgb = [0, 0, 0]
+    rgb[colourPosition] = colourArray[colourPosition];
+    return "rgb(" + rgb.join() + ")";
 };
 
 $(function() {
     window.game = new Game();
-    game.startGame();	
+    game.startGame();
 
-    $('.circle').bind('contextmenu', function(evt) { 
-  		evt.preventDefault();
-	}, false);
+    $('.circle').bind('contextmenu', function(evt) {
+        evt.preventDefault();
+    }, false);
 });
